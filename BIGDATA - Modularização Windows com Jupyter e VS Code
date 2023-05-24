@@ -1,1 +1,115 @@
+Using Jupyter, following cells:
+-----------------------
+!mkdir projeto_modular
+-----------------------
+%cd projeto_modular/
+----------------------------
+with open('app.py', 'w') as file:
+    pass
+---------------------------    
+!mkdir preprocessing
+----------------------------------
+!type nul > preprocessing\__init__.py
+---------------------------------
+!python -m venv ./venv
+-------------------------------
+!venv\Scripts\activate.bat
+--------------------------------
+!mkdir data
+--------------------------------
+from sklearn import datasets
+iris = datasets.load_iris()
+----------------------------
+import pandas as pd
+
+iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
+iris_df["target"] = iris.target
+iris_df.to_csv("data/iris.csv", index=False)
+-------------
+!pip install pandas numpy plotly (It's prefarable if you have them already installed.)
+-------------
+!pip freeze > requirements.txt
+---------------
+%%writefile preprocessing/normalize.py
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+def normalize_data(data):
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(data)
+    return normalized_data
+    
+    ---------------------------
+    import pandas as pd
+from preprocessing.normalize import normalize_data
+
+# Carrega o arquivo CSV
+data = pd.read_csv("data/iris.csv")
+
+# Chama a função de normalização
+normalized_data = normalize_data(data)
+
+# Exemplo de exibição dos dados normalizados
+print(normalized_data)
+-------------------------------------
+
+Now run normalize.py 
+
+Paste:
+
+def normalize(data):
+    pass
+    
+Save it!
+-----------------------------------
+
+Now run app.py and paste: 
+
+import pandas as pd
+
+
+iris_dataset = pd.read_csv("./data/iris.csv")
+
+Save it!
+-------------------------------------
+Now run again normalize.py 
+
+Paste:
+
+def normalize(data):
+    return data
+    
+Save it!
+
+------------------------------------
+
+Now run again app.py and paste:
+
+import pandas as pd
+from preprocessing.normalize import *
+
+iris_dataset = pd.read_csv("./data/iris.csv")
+
+normalized_data = normalize(iris_dataset)
+
+print(normalized_data.head(5))
+
+-------------------------------------------------------------------------
+
+Now - Open the jupyter notebook on your browser again and add the following cells:
+
+--------------------------------------------
+
+!python app.py
+
+
+
+
+
+
+
+
+#damadori :D
+
+
 

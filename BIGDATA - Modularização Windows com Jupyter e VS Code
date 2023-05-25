@@ -1,35 +1,36 @@
-Using Jupyter, following cells:
------------------------
+Run a new Jupyter notebook and paste the following codes cell by cell as defined below:
+
 !mkdir projeto_modular
------------------------
+___________________________________
 %cd projeto_modular/
-----------------------------
+___________________________________
 with open('app.py', 'w') as file:
     pass
----------------------------    
+____________________________________
 !mkdir preprocessing
-----------------------------------
+____________________________________
 !type nul > preprocessing\__init__.py
----------------------------------
+____________________________________
 !python -m venv ./venv
--------------------------------
+____________________________________ 
 !venv\Scripts\activate.bat
---------------------------------
+____________________________________ (You can also activate virtual machine using the promp (adm mode)
 !mkdir data
---------------------------------
+____________________________________
 from sklearn import datasets
+
 iris = datasets.load_iris()
-----------------------------
+_____________________________________
 import pandas as pd
 
 iris_df = pd.DataFrame(data=iris.data, columns=iris.feature_names)
 iris_df["target"] = iris.target
 iris_df.to_csv("data/iris.csv", index=False)
--------------
-!pip install pandas numpy plotly (It's prefarable if you have them already installed.)
--------------
+______________________________________
+!pip install pandas numpy plotly
+______________________________________ (You probably already have them)
 !pip freeze > requirements.txt
----------------
+______________________________________
 %%writefile preprocessing/normalize.py
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
@@ -38,78 +39,148 @@ def normalize_data(data):
     scaler = MinMaxScaler()
     normalized_data = scaler.fit_transform(data)
     return normalized_data
+_______________________________________
+!pip install scipy
+_______________________________________
+pip install scikit-learn
+_______________________________________
+
+- Now, open VisuaL Studio Code:
+- Onde a new folder (The one you just created at the very first cell on jupyter)
+- Now as configured down bellow:
+
+projeto_modular/
+  ├── app.py
+  ├── preprocessing/
+  │   ├── __init__.py
+  │   └── normalize.py
+  ├── data/
+  │   └── iris.csv
+  ├── venv/
+  └── requirements.txt
+  ________________________________________
+  
+  Edit app.py and paste the script bellow:
+  
+  import pandas as pd
+from preprocessing.normalize import normalize_data
+from sklearn import datasets
+
+# Load file CSV
+iris_dataset = pd.read_csv("./data/iris.csv")
+
+# Calls normalization function
+
+normalized_data = normalize_data(iris_dataset)
+
+# Map numeric values on the collumn for its correspondents
+
+iris = datasets.load_iris()
+target_names = iris.target_names
+class_mapping = {i: name for i, name in enumerate(target_names)}
+iris_dataset["target"] = [class_mapping[int(value)] for value in iris_dataset["target"]]
+
+# Exhibiton of normalized data with name in the las columns
+
+df_normalized = pd.DataFrame(data=normalized_data, columns=iris_dataset.columns)
+print(df_normalized.head(5))
+print("---------------------")
+print(iris_dataset.head(5))
+
+___________________________________________
+
+
+ Edit normalize.py and paste the script down bellow: 
+ 
+ import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+def normalize_data(data):
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(data)
+    return normalized_data
+
+____________________________________________
+
+Now you add a new cell on the jupyter notebook e paste:
+
+!python app.py
+_____________________________________________
+
+Result:
+
+sepal length (cm)  sepal width (cm)  ...  petal width (cm)  target
+0           0.222222          0.625000  ...          0.041667     0.0
+1           0.166667          0.416667  ...          0.041667     0.0
+2           0.111111          0.500000  ...          0.041667     0.0
+3           0.083333          0.458333  ...          0.041667     0.0
+4           0.194444          0.666667  ...          0.041667     0.0
+
+[5 rows x 5 columns]
+---------------------
+   sepal length (cm)  sepal width (cm)  ...  petal width (cm)  target
+0                5.1               3.5  ...               0.2  setosa
+1                4.9               3.0  ...               0.2  setosa
+2                4.7               3.2  ...               0.2  setosa
+3                4.6               3.1  ...               0.2  setosa
+4                5.0               3.6  ...               0.2  setosa
+
+[5 rows x 5 columns]
+
+____________________________________________
+
+Target has been renamed as "setosa" instead of "0.0" now due to the script used on the Visual Studio Video.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Run Visual Studio Code:
+
+Paste it in normalize.py
+
+import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
+
+def normalize_data(data):
+    scaler = MinMaxScaler()
+    normalized_data = scaler.fit_transform(data)
+    return normalized_data
     
-    ---------------------------
-    import pandas as pd
+_________________________________________________
+    
+Paste it in app.py
+
+import pandas as pd
 from preprocessing.normalize import normalize_data
 
 # Carrega o arquivo CSV
-data = pd.read_csv("data/iris.csv")
+iris_dataset = pd.read_csv("./data/iris.csv")
 
 # Chama a função de normalização
-normalized_data = normalize_data(data)
+normalized_data = normalize_data(iris_dataset)
 
 # Exemplo de exibição dos dados normalizados
-print(normalized_data)
--------------------------------------
+print(normalized_data[:5])
+print("---------------------")
+print(iris_dataset.head(5))
 
-Now run normalize.py 
-
-Paste:
-
-def normalize(data):
-    pass
-    
-Save it!
------------------------------------
-
-Now run app.py and paste: 
-
-import pandas as pd
-
-
-iris_dataset = pd.read_csv("./data/iris.csv")
-
-Save it!
--------------------------------------
-Now run again normalize.py 
-
-Paste:
-
-def normalize(data):
-    return data
-    
-Save it!
-
-------------------------------------
-
-Now run again app.py and paste:
-
-import pandas as pd
-from preprocessing.normalize import *
-
-iris_dataset = pd.read_csv("./data/iris.csv")
-
-normalized_data = normalize(iris_dataset)
-
-print(normalized_data.head(5))
-
--------------------------------------------------------------------------
-
-Now - Open the jupyter notebook on your browser again and add the following cells:
-
---------------------------------------------
-
-!python app.py
-
-
-
-
-
-
-
-
-#damadori :D
-
+____________________________________________________
 
 
